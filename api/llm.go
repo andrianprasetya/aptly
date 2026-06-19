@@ -40,7 +40,7 @@ func (o *OpenAIClient) Complete(ctx context.Context, system, user string) (strin
 	resp, err := o.client.CreateChatCompletion(ctx, openai.ChatCompletionRequest{
 		Model:       o.model,
 		MaxTokens:   maxOutputTokens,
-		Temperature: 0.4,
+		Temperature: 0.5, // a touch of warmth for the cover-letter prose
 		ResponseFormat: &openai.ChatCompletionResponseFormat{
 			Type: openai.ChatCompletionResponseFormatTypeJSONObject,
 		},
