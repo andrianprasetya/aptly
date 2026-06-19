@@ -23,6 +23,10 @@ api/tmp/
 # internal planning docs (keep out of the public repo)
 plan.md
 
+# create-next-app agent instruction files — keep local, out of the public repo
+web/AGENTS.md
+web/CLAUDE.md
+
 # editor / os
 .DS_Store
 Thumbs.db
