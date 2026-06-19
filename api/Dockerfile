@@ -1,5 +1,6 @@
-# Only needed if deploying to Fly.io. Render can build native Go without this.
-FROM golang:1.22 AS build
+# Container build for the Go API (used by Fly.io and DigitalOcean App Platform).
+# Must be >= the go directive in go.mod (currently 1.25).
+FROM golang:1.25 AS build
 WORKDIR /src
 COPY go.mod go.sum ./
 RUN go mod download

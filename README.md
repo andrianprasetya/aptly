@@ -28,7 +28,7 @@ missing, and a first-draft cover letter that doesn't lie about their experience.
 ## How to run it
 
 Two halves: a Go API (`/api`) and a Next.js frontend (`/web`). You need
-**Go 1.22+**, **Node 20+**, and an **OpenAI API key**.
+**Go 1.25+**, **Node 20+**, and an **OpenAI API key**.
 
 ### 1. API (`/api`)
 
@@ -71,7 +71,7 @@ Open http://localhost:3000, paste or upload your CV, paste a JD, click **Analyze
 [Browser] → Vercel (Next.js UI)
                 │  POST { cvText, jdText }   (NEXT_PUBLIC_API_URL)
                 ▼
-          Render/Fly (Go + Gin API)
+          DigitalOcean / Fly (Go + Gin API)
                 │  → OpenAI (grounded prompt → JSON)
                 ▼
           analysis JSON → UI renders
@@ -88,9 +88,10 @@ Open http://localhost:3000, paste or upload your CV, paste a JD, click **Analyze
 
 - **Frontend → Vercel:** project root = `web`. Set `NEXT_PUBLIC_API_URL` to your
   deployed API URL.
-- **API → Render** (native Go, no Docker) **or Fly.io** (uses `api/Dockerfile`).
-  Set `OPENAI_API_KEY` and `ALLOWED_ORIGIN` (= your Vercel URL, or the browser
-  will block every call via CORS).
+- **API → DigitalOcean App Platform** or **Fly.io** (both build `api/Dockerfile`;
+  source directory `/api`, HTTP port `8080`). Set `OPENAI_API_KEY` and
+  `ALLOWED_ORIGIN` (= your Vercel URL, or the browser will block every call via
+  CORS). Don't set `PORT` — the platform injects it.
 
 ---
 
