@@ -21,12 +21,16 @@ const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8080";
 export async function analyze(
   cvText: string,
   jdText: string,
+  turnstileToken?: string | null,
 ): Promise<AnalysisResult> {
+  const headers: Record<string, string> = { "Content-Type": "application/json" };
+  if (turnstileToken) headers["X-Turnstile-Token"] = turnstileToken;
+
   let res: Response;
   try {
     res = await fetch(`${API_BASE}/api/analyze`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers,
       body: JSON.stringify({ cvText, jdText }),
     });
   } catch {

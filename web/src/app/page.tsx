@@ -6,6 +6,7 @@ import CvInput from "@/components/CvInput";
 import ScoreCard from "@/components/ScoreCard";
 import SkillList from "@/components/SkillList";
 import CoverLetter from "@/components/CoverLetter";
+import Turnstile from "@/components/Turnstile";
 
 export default function Home() {
   const [cvText, setCvText] = useState("");
@@ -14,9 +15,14 @@ export default function Home() {
   const [loading, setLoading] = useState(false); // analysis in flight
   const [error, setError] = useState<string | null>(null);
   const [result, setResult] = useState<AnalysisResult | null>(null);
+  const [token, setToken] = useState<string | null>(null); // Turnstile token
+  const [resetSignal, setResetSignal] = useState(0);
+
+  const siteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY ?? "";
+  const verified = !siteKey || !!token; // ok if Turnstile disabled or solved
 
   const canSubmit =
-    cvText.trim() !== "" && jdText.trim() !== "" && !loading && !parsing;
+    cvText.trim() !== "" && jdText.trim() !== "" && !loading && !parsing && verified;
 
   async function onAnalyze() {
     if (!canSubmit) return;
@@ -39,11 +45,16 @@ export default function Home() {
     setError(null);
     setResult(null);
     try {
-      setResult(await analyze(cvText, jdText));
+      setResult(await analyze(cvText, jdText, token));
     } catch (err) {
       setError(err instanceof Error ? err.message : "Something went wrong.");
     } finally {
       setLoading(false);
+      // Turnstile tokens are single-use — refresh for the next analysis.
+      if (siteKey) {
+        setToken(null);
+        setResetSignal((s) => s + 1);
+      }
     }
   }
 
@@ -141,6 +152,8 @@ export default function Home() {
             Nothing is stored — your CV and the job description are sent once for analysis.
           </span>
         </div>
+
+        <Turnstile siteKey={siteKey} resetSignal={resetSignal} onToken={setToken} />
 
         {loading && (
           <div className="mt-4 max-w-[420px]">

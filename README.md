@@ -61,8 +61,10 @@ Open http://localhost:3000, paste or upload your CV, paste a JD, click **Analyze
 | `api` | `OPENAI_API_KEY` | OpenAI key — **server only**, never exposed to the browser. |
 | `api` | `ALLOWED_ORIGIN` | CORS allow-list = the frontend origin (your Vercel URL in prod). |
 | `api` | `OPENAI_MODEL` | _(optional)_ defaults to `gpt-4o-mini`. |
-| `api` | `PORT` | _(optional)_ defaults to `8080`; Render/Fly inject it. |
+| `api` | `TURNSTILE_SECRET` | _(optional)_ Cloudflare Turnstile secret. If set, `/api/analyze` requires a valid token. |
+| `api` | `PORT` | _(optional)_ defaults to `8080`; the platform injects it. |
 | `web` | `NEXT_PUBLIC_API_URL` | Public URL of the Go API. Defaults to `localhost:8080`. |
+| `web` | `NEXT_PUBLIC_TURNSTILE_SITE_KEY` | _(optional)_ Turnstile site key; pairs with `TURNSTILE_SECRET`. |
 
 ## Architecture
 
@@ -91,6 +93,10 @@ Open http://localhost:3000, paste or upload your CV, paste a JD, click **Analyze
   source directory `/api`, HTTP port `8080`). Set `OPENAI_API_KEY` and
   `ALLOWED_ORIGIN` (= your Vercel URL, or the browser will block every call via
   CORS). Don't set `PORT` — the platform injects it.
+- **(Optional) Bot protection:** create a Cloudflare Turnstile widget, then set
+  `TURNSTILE_SECRET` on the API and `NEXT_PUBLIC_TURNSTILE_SITE_KEY` on Vercel
+  (both must be set for it to take effect).
+- **Cost backstop:** set a monthly spending cap in the OpenAI dashboard.
 
 ---
 
@@ -115,7 +121,8 @@ cover letter is **grounded** — it won't invent skills you don't have.
 
 **In scope:** paste **or upload (PDF/DOCX)** your CV, paste the JD → overlap
 score, matched/missing skills, missing keywords, suggestions, grounded cover
-letter with copy; per-IP + global rate limits to bound cost on a public,
+letter (copy or download as PDF/DOCX); abuse guards (per-IP + global rate
+limits, input caps, optional Cloudflare Turnstile) to bound cost on a public,
 no-login endpoint.
 
 **Left out (on purpose):**
@@ -132,10 +139,10 @@ no-login endpoint.
   is supported — PDF/DOCX, parsed in your browser.)*
 - **Auth / accounts, scraping, auto-apply, full CV rewrite.** Bigger products
   and/or ToS risk — out of scope for a focused prototype.
-- **Hardened anti-abuse** (CAPTCHA/Turnstile, WAF, Redis-backed limits). The
-  in-memory per-IP limiter bounds the blast radius; production-grade abuse
-  protection is a documented next step. The OpenAI dashboard spend cap is the
-  real backstop.
+- **A full WAF and shared (Redis) limits.** Cloudflare Turnstile (bot challenge),
+  per-IP + global rate limits, and input caps are in place; a managed WAF and
+  cross-instance limits (Redis/Upstash) are next steps. The in-memory limiter is
+  per-instance, and the OpenAI dashboard spend cap remains the real backstop.
 
 ### Where I didn't have answers, and what I assumed
 

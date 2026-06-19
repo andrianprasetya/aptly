@@ -21,7 +21,7 @@ func main() {
 	r.Use(cors.New(cors.Config{
 		AllowOrigins: allowedOrigins(),
 		AllowMethods: []string{http.MethodGet, http.MethodPost, http.MethodOptions},
-		AllowHeaders: []string{"Content-Type"},
+		AllowHeaders: []string{"Content-Type", "X-Turnstile-Token"},
 	}))
 
 	r.GET("/health", func(c *gin.Context) {
@@ -32,7 +32,8 @@ func main() {
 	// The rate guard bounds abuse/cost on the public, no-login endpoint.
 	analyzer := NewAnalyzer(NewOpenAIClient())
 	guard := newRateGuard()
-	r.POST("/api/analyze", guard.middleware(), analyzeHandler(analyzer))
+	// Order: cheap in-memory rate limit first, then the Turnstile network check.
+	r.POST("/api/analyze", guard.middleware(), turnstileMiddleware(), analyzeHandler(analyzer))
 
 	if err := r.Run(":" + port()); err != nil {
 		panic(err)
