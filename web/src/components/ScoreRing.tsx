@@ -1,40 +1,43 @@
-// A circular progress ring for the overlap score. Color shifts by band.
+// Circular overlap-score ring (172px). Stroke + score color come from the band.
 
-function bandColor(score: number): string {
-  if (score >= 75) return "#16a34a"; // green-600
-  if (score >= 50) return "#d97706"; // amber-600
-  return "#dc2626"; // red-600
-}
-
-export default function ScoreRing({ score }: { score: number }) {
+export default function ScoreRing({
+  score,
+  color,
+}: {
+  score: number;
+  color: string;
+}) {
   const clamped = Math.max(0, Math.min(100, score));
-  const radius = 52;
-  const circumference = 2 * Math.PI * radius;
-  const dash = (clamped / 100) * circumference;
-  const color = bandColor(clamped);
+  const r = 68;
+  const circ = 2 * Math.PI * r;
+  const offset = circ * (1 - clamped / 100);
 
   return (
-    <svg width="128" height="128" viewBox="0 0 128 128" role="img"
-      aria-label={`Overlap score ${clamped} out of 100`}>
-      <circle
-        cx="64" cy="64" r={radius}
-        fill="none" strokeWidth="12"
-        className="stroke-zinc-200 dark:stroke-zinc-800"
-      />
-      <circle
-        cx="64" cy="64" r={radius}
-        fill="none" strokeWidth="12" strokeLinecap="round"
-        stroke={color}
-        strokeDasharray={`${dash} ${circumference}`}
-        transform="rotate(-90 64 64)"
-      />
-      <text
-        x="64" y="64" textAnchor="middle" dominantBaseline="central"
-        className="fill-zinc-900 dark:fill-zinc-50"
-        fontSize="30" fontWeight="700"
-      >
-        {clamped}
-      </text>
-    </svg>
+    <div className="relative h-[172px] w-[172px] flex-none">
+      <svg width="172" height="172" viewBox="0 0 160 160">
+        <circle cx="80" cy="80" r={r} fill="none" stroke="#eef2f6" strokeWidth="14" />
+        <circle
+          cx="80"
+          cy="80"
+          r={r}
+          fill="none"
+          stroke={color}
+          strokeWidth="14"
+          strokeLinecap="round"
+          strokeDasharray={circ}
+          strokeDashoffset={offset}
+          transform="rotate(-90 80 80)"
+        />
+      </svg>
+      <div className="absolute inset-0 flex flex-col items-center justify-center">
+        <span
+          className="font-mono text-[50px] font-semibold leading-none"
+          style={{ color }}
+        >
+          {clamped}
+        </span>
+        <span className="mt-[3px] font-mono text-[11.5px] text-slate-400">/ 100</span>
+      </div>
+    </div>
   );
 }

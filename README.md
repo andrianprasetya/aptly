@@ -112,9 +112,10 @@ cover letter is **grounded** — it won't invent skills you don't have.
 
 ### What's in scope, what I left out, and why
 
-**In scope:** paste CV + JD → overlap score, matched/missing skills, missing
-keywords, suggestions, grounded cover letter with copy; per-IP + global rate
-limits to bound cost on a public, no-login endpoint.
+**In scope:** paste **or upload (PDF/DOCX)** your CV, paste the JD → overlap
+score, matched/missing skills, missing keywords, suggestions, grounded cover
+letter with copy; per-IP + global rate limits to bound cost on a public,
+no-login endpoint.
 
 **Left out (on purpose):**
 
@@ -122,8 +123,12 @@ limits to bound cost on a public, no-login endpoint.
   adds no user value — and dropping it removes a deploy dependency, an env var,
   a failure mode for "the live link must work," and the privacy concern of
   storing people's CVs. (For a prototype, less is better judgment than more.)
-- **File upload (PDF/DOCX).** Pasting text covers the core flow; robust parsing
-  is a rabbit hole.
+- **Importing the JD from a link** (LinkedIn/JobStreet/etc.). Job boards are
+  auth-walled, JS-rendered, and anti-scraping, with ToS and SSRF risk — a
+  half-working link import reads as broken. The JD stays **paste-only by
+  design**; the reliable path (a browser extension that reads the page you
+  already have open) is a separate experiment, not server scraping. *(CV upload
+  is supported — PDF/DOCX, parsed in your browser.)*
 - **Auth / accounts, scraping, auto-apply, full CV rewrite.** Bigger products
   and/or ToS risk — out of scope for a focused prototype.
 - **Hardened anti-abuse** (CAPTCHA/Turnstile, WAF, Redis-backed limits). The
@@ -135,8 +140,9 @@ limits to bound cost on a public, no-login endpoint.
 
 - **"ATS score" is a fuzzy construct.** Rather than fake one, I reframed it as an
   honest overlap estimate and labelled it as such in the UI.
-- Assumed CV and JD are **English plain text** that the user **pastes** (no file
-  parsing, no language detection).
+- Assumed CV and JD are **English text**. The CV can be **uploaded as PDF/DOCX**
+  (parsed in the browser, with the extracted text shown for review) or pasted;
+  the JD is pasted. No language detection; scanned/image PDFs aren't OCR'd.
 - Assumed **`gpt-4o-mini` quality is good enough** for a prototype.
 - **No formal user validation yet** — built from personal pain, to be tested
   with the questions below.
@@ -157,9 +163,9 @@ missing-skills list matches what a human reviewer would flag — with **zero
 invented skills** (the grounding holds). If I added analytics, I'd watch the
 cover-letter copy rate, repeat usage, and run a small manual grounding eval.
 
-**Next:** file upload (PDF/DOCX), pull the JD from a URL, let the user choose a
-tone, a proper grounding-eval harness, and — only if users ask for it —
-optional accounts so they can compare fit across roles.
+**Next:** import the JD from a link via a browser extension (reliable, no
+scraping), let the user choose a tone, a proper grounding-eval harness, and —
+only if users ask for it — optional accounts so they can compare fit across roles.
 
 ---
 
