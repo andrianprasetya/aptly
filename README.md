@@ -12,13 +12,14 @@ cover letter — on one page.
 
 ## What it is
 
-A small web tool for job seekers. You paste two things — your CV and a job
-description (JD) — and it returns:
+A small web tool for job seekers. You give it two things — your CV (paste it, or
+upload a PDF/DOCX that's parsed in your browser) and a job description (JD,
+pasted) — and it returns:
 
 - a **fit overlap score** (0–100), labelled honestly as an overlap estimate, **not** a real ATS score;
 - **matched skills**, **missing skills**, and **missing keywords**;
 - a few concrete **suggestions** to strengthen the CV for that role;
-- a **grounded cover letter** you can copy — written only from what's actually in your CV.
+- a **grounded cover letter** — written only from what's actually in your CV — to **copy or download as PDF/DOCX**.
 
 **Who it's for and the one job it does well:** a job seeker tailoring an
 application, who wants — in under a minute — to see where they fit, what's
@@ -52,7 +53,7 @@ echo "NEXT_PUBLIC_API_URL=http://localhost:8080" > .env.local
 npm run dev                    # http://localhost:3000
 ```
 
-Open http://localhost:3000, paste a CV and a JD, click **Analyze fit**.
+Open http://localhost:3000, paste or upload your CV, paste a JD, click **Analyze fit**.
 
 ### Environment variables
 
