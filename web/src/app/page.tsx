@@ -125,6 +125,12 @@ export default function Home() {
           <CoverLetter text={result.coverLetter} />
         </div>
       )}
+
+      <footer className="mt-auto border-t border-zinc-200 pt-6 text-xs leading-5 text-zinc-500 dark:border-zinc-800">
+        Prototype. Your CV and the job description are sent to the API only to
+        generate this analysis and aren&apos;t stored anywhere. The match score
+        is a rough overlap estimate, not a real ATS score.
+      </footer>
     </main>
   );
 }

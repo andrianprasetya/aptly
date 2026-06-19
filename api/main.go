@@ -24,8 +24,10 @@ func main() {
 	})
 
 	// Wire the analyzer: OpenAI client -> service -> HTTP handler.
+	// The rate guard bounds abuse/cost on the public, no-login endpoint.
 	analyzer := NewAnalyzer(NewOpenAIClient())
-	r.POST("/api/analyze", analyzeHandler(analyzer))
+	guard := newRateGuard()
+	r.POST("/api/analyze", guard.middleware(), analyzeHandler(analyzer))
 
 	if err := r.Run(":" + port()); err != nil {
 		panic(err)
