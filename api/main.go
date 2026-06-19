@@ -6,9 +6,14 @@ import (
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
+	"github.com/joho/godotenv"
 )
 
 func main() {
+	// Load .env for local dev if present. In prod the platform sets real env
+	// vars and there's no .env file — the error is expected and ignored.
+	_ = godotenv.Load()
+
 	r := gin.Default()
 
 	// CORS: allow only the deployed frontend origin (set via ALLOWED_ORIGIN).
