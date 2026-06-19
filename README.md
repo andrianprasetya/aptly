@@ -1,7 +1,6 @@
 # Aptly
 
-> **Live demo:** `<your-vercel-url>` · **API:** `<your-api-url>`
-> _(fill these in after deploying — see [Deploy](#deploy))_
+> **Live demo:** https://aptly-mu.vercel.app · **API:** https://aptly-app-ausa2.ondigitalocean.app
 
 Paste your CV and a job description, get an honest fit estimate and a grounded
 cover letter — on one page.
