@@ -1,0 +1,32 @@
+# dependencies
+node_modules/
+
+# next.js
+web/.next/
+web/out/
+web/build/
+web/next-env.d.ts
+
+# env files (never commit secrets) — keep *.env.example
+.env
+.env.local
+.env*.local
+**/.env
+**/.env.local
+
+# go build output
+api/api
+api/api.exe
+api/aptly-api
+api/tmp/
+
+# internal planning docs (keep out of the public repo)
+plan.md
+
+# editor / os
+.DS_Store
+Thumbs.db
+*.log
+.vercel
+.idea/
+.vscode/
