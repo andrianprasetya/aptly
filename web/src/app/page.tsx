@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { analyze, type AnalysisResult } from "@/lib/api";
+import { analyze, MAX_INPUT_CHARS, type AnalysisResult } from "@/lib/api";
 import CvInput from "@/components/CvInput";
 import ScoreCard from "@/components/ScoreCard";
 import SkillList from "@/components/SkillList";
@@ -20,6 +20,21 @@ export default function Home() {
 
   async function onAnalyze() {
     if (!canSubmit) return;
+
+    // Friendly length check before spending a request (mirrors the API cap).
+    const overLimit: string[] = [];
+    if (cvText.trim().length > MAX_INPUT_CHARS)
+      overLimit.push(`your CV (${cvText.trim().length.toLocaleString()})`);
+    if (jdText.trim().length > MAX_INPUT_CHARS)
+      overLimit.push(`the job description (${jdText.trim().length.toLocaleString()})`);
+    if (overLimit.length > 0) {
+      setResult(null);
+      setError(
+        `Too long: ${overLimit.join(" and ")} — the limit is ${MAX_INPUT_CHARS.toLocaleString()} characters each. Trim it and try again.`,
+      );
+      return;
+    }
+
     setLoading(true);
     setError(null);
     setResult(null);
@@ -96,8 +111,7 @@ export default function Home() {
             <div>
               <div className="text-sm font-semibold text-red-700">{error}</div>
               <div className="mt-0.5 text-[13px] text-[#9f5151]">
-                Your CV and the job description are still here — wait a moment, then try
-                again.
+                Your CV and the job description are still here.
               </div>
             </div>
           </div>

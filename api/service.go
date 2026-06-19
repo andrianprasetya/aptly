@@ -6,10 +6,12 @@ import (
 	"errors"
 	"fmt"
 	"strings"
+	"unicode/utf8"
 )
 
 // maxInputChars rejects oversized CV/JD before spending an OpenAI call.
-const maxInputChars = 20000
+// Generous enough for an uploaded multi-page CV, still bounded for cost.
+const maxInputChars = 50000
 
 var (
 	ErrInvalidInput  = errors.New("cvText and jdText are required")
@@ -35,7 +37,7 @@ func (a *Analyzer) Analyze(ctx context.Context, req AnalyzeRequest) (*AnalysisRe
 	if cv == "" || jd == "" {
 		return nil, ErrInvalidInput
 	}
-	if len(cv) > maxInputChars || len(jd) > maxInputChars {
+	if utf8.RuneCountInString(cv) > maxInputChars || utf8.RuneCountInString(jd) > maxInputChars {
 		return nil, ErrInputTooLarge
 	}
 

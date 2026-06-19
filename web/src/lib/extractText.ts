@@ -36,15 +36,27 @@ export async function extractText(file: File): Promise<ExtractResult> {
   try {
     if (isPdf(file)) {
       const { text, pages } = await extractPdf(file);
-      if (text.trim().length < MIN_TEXT_CHARS) return { ok: false, reason: "scanned" };
-      return { ok: true, text: text.trim(), pages };
+      const clean = normalize(text);
+      if (clean.length < MIN_TEXT_CHARS) return { ok: false, reason: "scanned" };
+      return { ok: true, text: clean, pages };
     }
-    const text = await extractDocx(file);
-    if (text.trim().length < MIN_TEXT_CHARS) return { ok: false, reason: "scanned" };
-    return { ok: true, text: text.trim() };
+    const clean = normalize(await extractDocx(file));
+    if (clean.length < MIN_TEXT_CHARS) return { ok: false, reason: "scanned" };
+    return { ok: true, text: clean };
   } catch {
     return { ok: false, reason: "parseerror" };
   }
+}
+
+// Collapse extraction whitespace: runs of horizontal whitespace (space, tab,
+// nbsp — everything but newline) and 3+ blank lines. Cuts bloat from per-item
+// spacing and tidies up the extracted text.
+function normalize(text: string): string {
+  return text
+    .replace(/[^\S\n]+/g, " ")
+    .replace(/ *\n */g, "\n")
+    .replace(/\n{3,}/g, "\n\n")
+    .trim();
 }
 
 async function extractPdf(file: File): Promise<{ text: string; pages: number }> {

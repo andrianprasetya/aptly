@@ -10,6 +10,10 @@ export interface AnalysisResult {
   coverLetter: string;
 }
 
+// Per-field input cap, mirrors the API's maxInputChars (api/service.go). Used
+// for a friendly client-side check before spending a request.
+export const MAX_INPUT_CHARS = 50000;
+
 // NEXT_PUBLIC_API_URL is the public Go API URL (set on Vercel). Falls back to
 // the local Go dev server.
 const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8080";
