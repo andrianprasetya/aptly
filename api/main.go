@@ -23,6 +23,10 @@ func main() {
 		c.JSON(http.StatusOK, gin.H{"ok": true})
 	})
 
+	// Wire the analyzer: OpenAI client -> service -> HTTP handler.
+	analyzer := NewAnalyzer(NewOpenAIClient())
+	r.POST("/api/analyze", analyzeHandler(analyzer))
+
 	if err := r.Run(":" + port()); err != nil {
 		panic(err)
 	}
